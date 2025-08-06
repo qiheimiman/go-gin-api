@@ -286,9 +286,9 @@ func New(logger *zap.Logger, options ...Option) (Mux, error) {
 	}
 
 	if !opt.disableSwagger {
-		if !env.Active().IsPro() {
-			mux.engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler)) // register swagger
-		}
+		// if !env.Active().IsPro() {
+		mux.engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler)) // register swagger
+		// }
 	}
 
 	if !opt.disablePrometheus {
