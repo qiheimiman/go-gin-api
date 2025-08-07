@@ -9,7 +9,7 @@ import (
 	"os/exec"
 )
 
-// webhook 接收 GitHub 推送事件 测试12
+// webhook 接收 GitHub 推送事件 测试123
 func main() {
 	http.HandleFunc("/webhook", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
