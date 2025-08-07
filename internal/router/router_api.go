@@ -19,6 +19,7 @@ func setApiRouter(r *resource) {
 	{
 		helpers.GET("/md5/:str", helperHandler.Md5())
 		helpers.POST("/sign", helperHandler.Sign())
+		helpers.GET("/now_time", helperHandler.NowTime())
 	}
 
 	// admin

@@ -23,6 +23,11 @@ type Handler interface {
 	// @Tags Helper
 	// @Router /helper/sign [post]
 	Sign() core.HandlerFunc
+
+	// now_time 当前时间
+	// @Tags Helper
+	// @Router /helper/now_time [get]
+	NowTime() core.HandlerFunc
 }
 
 type handler struct {
