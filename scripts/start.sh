@@ -14,6 +14,11 @@ go mod tidy
 # 编译主程序
 go build -o go-gin-api main.go
 
+# 检查是否存在 swag 命令
+if command -v swag >/dev/null 2>&1; then
+    swag init
+fi
+
 # 使用 pgrep 获取服务进程的 PID
 PID=$(pgrep -f $SERVICE_NAME)
 
