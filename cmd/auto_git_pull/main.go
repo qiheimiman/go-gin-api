@@ -43,7 +43,7 @@ func main() {
 
 		// 执行部署命令
 		cmd := exec.Command("sh", "-c", `
-			../../scripts/start.sh
+			./scripts/start.sh
 		`)
 
 		output, err := cmd.CombinedOutput()
