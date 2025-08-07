@@ -57,6 +57,6 @@ func main() {
 		w.Write([]byte("Dev branch updated and app restarted."))
 	})
 
-	log.Println("Webhook server listening on :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Println("Webhook server listening on :83")
+	log.Fatal(http.ListenAndServe(":83", nil))
 }
