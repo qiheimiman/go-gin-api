@@ -22,10 +22,18 @@ if [ -z "$PID" ]; then
     echo "开始启动服务..."
     nohup ./go-gin-api -env dev  > ./start_api.log 2>&1 &
 else
-    # 发送 SIGUSR1 信号到进程，告诉 endless 重启服务
-    echo "正在重启服务（进程ID: $PID）..."
-    kill -1 $PID
-    echo "重启信号已发送。"
+    echo "正在停止服务（进程ID: $PID）..."
+    kill -15 "$PID"  # 优雅关闭（SIGTERM）
+    sleep 2
+
+    # 如果进程仍未退出，强制杀死
+    if pgrep -f "^\.\/go-gin-api.*-env" > /dev/null; then
+        echo "进程未退出，强制终止..."
+        kill -9 "$PID"
+    fi
+
+    echo "启动新服务..."
+    nohup ./go-gin-api -env dev > ./start_api.log 2>&1 &
 fi
 
 # 使用 Supervisor 重启任务
