@@ -15,12 +15,12 @@ go mod tidy
 go build -o go-gin-api main.go
 
 # 使用 pgrep 获取服务进程的 PID
-PID=$(pgrep -f "^\.\/$SERVICE_NAME.*-port 9999")
+PID=$(pgrep -f "^\.\/go-gin-api.*-env")
 
 # 检查 PID 是否存在
 if [ -z "$PID" ]; then
     echo "开始启动服务..."
-    nohup ./go-gin-api -port 9999 -env dev  > ./start_api.log 2>&1 &
+    nohup ./go-gin-api -env dev  > ./start_api.log 2>&1 &
 else
     # 发送 SIGUSR1 信号到进程，告诉 endless 重启服务
     echo "正在重启服务（进程ID: $PID）..."
