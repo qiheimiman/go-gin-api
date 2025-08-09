@@ -3,9 +3,7 @@ package binance
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
-	"os"
 	"regexp"
 	"time"
 
@@ -63,6 +61,7 @@ var BinanceNewsCmd = &cobra.Command{
 			// chromedp.Flag("headless", false), // 设置为非无头模式，显示浏览器界面
 			chromedp.Flag("disable-gpu", false),
 			chromedp.Flag("start-maximized", true),
+			chromedp.Flag("no-sandbox", true),
 		)
 
 		// 创建一个新的Chrome实例
@@ -74,6 +73,7 @@ var BinanceNewsCmd = &cobra.Command{
 		defer cancel()
 
 		err = chromedp.Run(browserCtx,
+			chromedp.Evaluate(`navigator.webdriver = undefined`, nil), // 隐藏 webdriver
 			chromedp.Navigate(url),                   // 打开页面
 			chromedp.Sleep(3*time.Second),            // 等待页面加载
 			chromedp.OuterHTML("html", &htmlContent), // 获取页面 HTML
@@ -83,7 +83,7 @@ var BinanceNewsCmd = &cobra.Command{
 		}
 
 		// 打印抓取的 HTML 内容
-		fmt.Println("页面内容已抓取..." + htmlContent)
+		// fmt.Println("页面内容已抓取..." + htmlContent)
 
 		// 使用正则表达式提取 <script> 标签中 id="__APP_DATA" 的内容
 		re := regexp.MustCompile(`<script id="__APP_DATA" type="application/json" nonce="[^"]*">(.+?)</script>`)
@@ -100,13 +100,11 @@ var BinanceNewsCmd = &cobra.Command{
 		// // fmt.Println(appData)
 
 		// // 将提取到的内容写入文件
-		filePath := "app_data.json"
-		err = os.WriteFile(filePath, []byte(appData), 0644)
-		if err != nil {
-			global.Logger.Error(ctx, "写入文件失败", err)
-		}
-
-		return
+		// filePath := "app_data.json"
+		// err = os.WriteFile(filePath, []byte(appData), 0644)
+		// if err != nil {
+		// 	global.Logger.Error(ctx, "写入文件失败", err)
+		// }
 
 		// 定义一个通用的结构来解析 JSON
 		var data map[string]interface{}
@@ -114,7 +112,7 @@ var BinanceNewsCmd = &cobra.Command{
 		// 解析 JSON 数据
 		err = json.Unmarshal([]byte(appData), &data)
 		if err != nil {
-			err = errors.New("JSON 解析失败:" + err.Error())
+			global.Logger.Error(ctx, "JSON 解析失败", err)
 			return
 		}
 
@@ -145,15 +143,15 @@ var BinanceNewsCmd = &cobra.Command{
 					if result.RowsAffected > 0 {
 						continue
 					}
-					fmt.Println(row["date"])
+
 					// 新增
 					result = global.DB.Table("news").Create(map[string]interface{}{
 						"title":     row["title"].(string),
 						"sub_title": row["subTitle"].(string),
 						"web_link":  row["webLink"].(string),
 
-						"binance_id": row["id"].(string),
-						// "publish_time": row["date"]
+						"binance_id":   row["id"].(string),
+						"publish_time": time.Unix(int64(row["date"].(float64)), 0).Format("2006-01-02 15:04:05"),
 					})
 
 					if result.Error != nil {
