@@ -11,7 +11,7 @@ import (
 
 type listRequest struct{}
 
-type listResponse struct {
+type listData struct {
 	ID          int64     `json:"id" gorm:"id"`                     // 自增主键
 	Title       string    `json:"title" gorm:"title"`               // 新闻标题
 	SubTitle    string    `json:"sub_title" gorm:"sub_title"`       // 新闻副标题
@@ -19,6 +19,10 @@ type listResponse struct {
 	BinanceId   string    `json:"binance_id" gorm:"binance_id"`     // Binance平台新闻ID
 	PublishTime time.Time `json:"publish_time" gorm:"publish_time"` // 新闻发布时间
 	Type        int8      `json:"type" gorm:"type"`                 // 类型 1-币安新闻
+}
+
+type listResponse struct {
+	List []*listData `json:"list"`
 }
 
 // List 获取最新加密市场新闻列表
@@ -33,9 +37,6 @@ type listResponse struct {
 // @Router /public_api/news/list [get]
 func (h *handler) List() core.HandlerFunc {
 	return func(c core.Context) {
-
-		res := new([]listResponse)
-
 		info, err := h.newsService.List(c)
 		if err != nil {
 			// 这里的逻辑是正确的，应该返回错误
@@ -57,10 +58,14 @@ func (h *handler) List() core.HandlerFunc {
 			return
 		}
 
+		// 初始化一个新的 listResponse 实例
+		res := &listResponse{
+			List: make([]*listData, 0, len(info)),
+		}
 		// 将info赋值给res
 		// 将 info 中的元素复制到 res 指向的切片中
 		for _, v := range info {
-			*res = append(*res, listResponse{
+			res.List = append(res.List, &listData{
 				ID:          int64(v.Id),
 				Title:       v.Title,
 				SubTitle:    v.SubTitle,
