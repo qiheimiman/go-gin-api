@@ -7,6 +7,7 @@ import (
 	"github.com/xinliangnote/go-gin-api/internal/api/cron"
 	"github.com/xinliangnote/go-gin-api/internal/api/helper"
 	"github.com/xinliangnote/go-gin-api/internal/api/menu"
+	"github.com/xinliangnote/go-gin-api/internal/api/order"
 	"github.com/xinliangnote/go-gin-api/internal/api/tool"
 	"github.com/xinliangnote/go-gin-api/internal/pkg/core"
 )
@@ -14,6 +15,14 @@ import (
 func setApiRouter(r *resource) {
 	// helper
 	helperHandler := helper.New(r.logger, r.db, r.cache)
+
+	orders := r.mux.Group("/order")
+	{
+		orderHandler := order.New(r.logger, r.db, r.cache)
+		orders.POST("/create", orderHandler.Create())
+		orders.POST("/cancel", orderHandler.Cancel())
+		orders.GET("/detail/:id", orderHandler.Detail())
+	}
 
 	helpers := r.mux.Group("/helper")
 	{

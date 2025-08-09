@@ -1,0 +1,17 @@
+app:
+  run_mode: debug
+  log_save_path: ./logs/
+  log_file_ext: .log
+
+erp_mysql:
+  db_type: mysql
+  host: "127.0.0.1"
+  port: 3306
+  user: "root"
+  password: "root"
+  db: "go_gin_api"
+  table_prefix: ""
+  charset: utf8
+  parse_time: True
+  max_idle_conns: 3
+  max_open_conns: 6

@@ -1,15 +1,15 @@
-package authorized_api
+package order
 
 import "time"
 
-// AuthorizedApi 已授权接口地址表
+// Order 订单表
 //
-//go:generate gormgen -structs AuthorizedApi -input .
-type AuthorizedApi struct {
+//go:generate gormgen -structs Order -input .
+type Order struct {
 	Id          int32     // 主键
-	BusinessKey string    // 调用方key
-	Method      string    // 请求方式
-	Api         string    // 请求地址
+	OrderNo     string    // 订单号
+	OrderFee    int32     // 订单金额(分)
+	Status      int32     // 订单状态 1:已创建  2:已取消
 	IsDeleted   int32     // 是否删除 1:是  -1:否
 	CreatedAt   time.Time `gorm:"time"` // 创建时间
 	CreatedUser string    // 创建人
