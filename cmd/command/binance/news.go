@@ -60,7 +60,7 @@ var BinanceNewsCmd = &cobra.Command{
 		// 执行浏览器任务
 		// 创建Chrome浏览器选项
 		opts := append(chromedp.DefaultExecAllocatorOptions[:],
-			chromedp.Flag("headless", false), // 设置为非无头模式，显示浏览器界面
+			// chromedp.Flag("headless", false), // 设置为非无头模式，显示浏览器界面
 			chromedp.Flag("disable-gpu", false),
 			chromedp.Flag("start-maximized", true),
 		)
@@ -79,18 +79,18 @@ var BinanceNewsCmd = &cobra.Command{
 			chromedp.OuterHTML("html", &htmlContent), // 获取页面 HTML
 		)
 		if err != nil {
-			return
+			global.Logger.Error(ctx, err)
 		}
 
 		// 打印抓取的 HTML 内容
-		// fmt.Println("页面内容已抓取..." + htmlContent)
+		fmt.Println("页面内容已抓取..." + htmlContent)
 
 		// 使用正则表达式提取 <script> 标签中 id="__APP_DATA" 的内容
 		re := regexp.MustCompile(`<script id="__APP_DATA" type="application/json" nonce="[^"]*">(.+?)</script>`)
 		matches := re.FindStringSubmatch(htmlContent)
 
 		if len(matches) < 2 {
-			err = errors.New("未找到 __APP_DATA 的内容")
+			global.Logger.Error(ctx, "未找到 __APP_DATA 的内容")
 			return
 		}
 
@@ -103,8 +103,7 @@ var BinanceNewsCmd = &cobra.Command{
 		filePath := "app_data.json"
 		err = os.WriteFile(filePath, []byte(appData), 0644)
 		if err != nil {
-			fmt.Println("写入文件失败:", err)
-
+			global.Logger.Error(ctx, "写入文件失败", err)
 		}
 
 		return
