@@ -1,6 +1,7 @@
 package command
 
 import (
+	"github.com/xinliangnote/go-gin-api/cmd/command/binance"
 	"github.com/xinliangnote/go-gin-api/cmd/command/bubbles"
 	"github.com/xinliangnote/go-gin-api/cmd/command/zhonghuan"
 
@@ -18,5 +19,6 @@ func Execute() error {
 func init() {
 	rootCmd.AddCommand(zhonghuan.ZhonghuanCmd)
 	rootCmd.AddCommand(bubbles.Bubbles1000Cmd)
+	rootCmd.AddCommand(binance.BinanceNewsCmd)
 
 }

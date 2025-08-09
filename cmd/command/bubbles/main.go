@@ -8,13 +8,13 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/google/uuid"
-	"github.com/spf13/cobra"
 	"github.com/xinliangnote/go-gin-api/cmd/global"
 	"github.com/xinliangnote/go-gin-api/cmd/initialize"
 	"github.com/xinliangnote/go-gin-api/cmd/pkg/lock"
 	"github.com/xinliangnote/go-gin-api/internal/repository/mysql/bubbles1000"
 
+	"github.com/google/uuid"
+	"github.com/spf13/cobra"
 	"gorm.io/gorm"
 )
 
