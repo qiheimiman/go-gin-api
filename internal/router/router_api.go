@@ -7,6 +7,9 @@ import (
 	"github.com/xinliangnote/go-gin-api/internal/api/cron"
 	"github.com/xinliangnote/go-gin-api/internal/api/helper"
 	"github.com/xinliangnote/go-gin-api/internal/api/menu"
+	"github.com/xinliangnote/go-gin-api/internal/api/news"
+
+	// "github.com/xinliangnote/go-gin-api/internal/api/news"
 	"github.com/xinliangnote/go-gin-api/internal/api/order"
 	"github.com/xinliangnote/go-gin-api/internal/api/tool"
 	"github.com/xinliangnote/go-gin-api/internal/pkg/core"
@@ -108,6 +111,14 @@ func setApiRouter(r *resource) {
 		api.POST("/cron/:id", core.AliasForRecordMetrics("/api/cron/modify"), cronHandler.Modify())
 		api.PATCH("/cron/used", cronHandler.UpdateUsed())
 		api.PATCH("/cron/exec/:id", core.AliasForRecordMetrics("/api/cron/exec"), cronHandler.Execute())
+
+	}
+
+	publicApi := r.mux.Group("/public_api")
+	{
+
+		newsHandler := news.New(r.logger, r.db, r.cache)
+		publicApi.GET("/news/list", newsHandler.List())
 
 	}
 }
