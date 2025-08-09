@@ -128,21 +128,6 @@ var Bubbles1000Cmd = &cobra.Command{
 		global.Logger.Info(ctx, fmt.Sprintf("成功解析到 %d 条数据", len(bubblesList)))
 		fmt.Printf("成功解析到 %d 条数据\n", len(bubblesList))
 
-		// 开始事务
-		tx := global.DB.Begin()
-		if tx.Error != nil {
-			global.Logger.Error(ctx, "开启事务失败:"+tx.Error.Error())
-			fmt.Printf("开启事务失败: %v\n", tx.Error)
-			return
-		}
-		defer func() {
-			if r := recover(); r != nil {
-				tx.Rollback()
-				global.Logger.Error(ctx, fmt.Sprintf("发生 panic，事务已回滚: %v", r))
-				fmt.Printf("发生 panic，事务已回滚: %v\n", r)
-			}
-		}()
-
 		// 如果需要清空旧数据，取消下面注释
 		// if err := tx.Table("bubbles1000").Where("1=1").Delete(&bubbles1000.Bubbles1000{}).Error; err != nil {
 		//	 tx.Rollback()
@@ -157,7 +142,6 @@ var Bubbles1000Cmd = &cobra.Command{
 			// 将map类型转换为JSON字符串
 			symbolsJson, err := json.Marshal(data.Symbols)
 			if err != nil {
-				tx.Rollback()
 				global.Logger.Error(ctx, "序列化 Symbols 失败:"+err.Error())
 				fmt.Printf("序列化 Symbols 失败: %v\n", err)
 				// 可以选择 continue 跳过错误，或 return 终止
@@ -165,7 +149,6 @@ var Bubbles1000Cmd = &cobra.Command{
 			}
 			performanceJson, err := json.Marshal(data.Performance)
 			if err != nil {
-				tx.Rollback()
 				global.Logger.Error(ctx, "序列化 Performance 失败:"+err.Error())
 				fmt.Printf("序列化 Performance 失败: %v\n", err)
 				// 可以选择 continue 跳过错误，或 return 终止
@@ -173,7 +156,6 @@ var Bubbles1000Cmd = &cobra.Command{
 			}
 			rankDiffsJson, err := json.Marshal(data.RankDiffs)
 			if err != nil {
-				tx.Rollback()
 				global.Logger.Error(ctx, "序列化 RankDiffs 失败:"+err.Error())
 				fmt.Printf("序列化 RankDiffs 失败: %v\n", err)
 				// 可以选择 continue 跳过错误，或 return 终止
@@ -181,7 +163,6 @@ var Bubbles1000Cmd = &cobra.Command{
 			}
 			exchangePricesJson, err := json.Marshal(data.ExchangePrices)
 			if err != nil {
-				tx.Rollback()
 				global.Logger.Error(ctx, "序列化 ExchangePrices 失败:"+err.Error())
 				fmt.Printf("序列化 ExchangePrices 失败: %v\n", err)
 				// 可以选择 continue 跳过错误，或 return 终止
@@ -190,7 +171,7 @@ var Bubbles1000Cmd = &cobra.Command{
 
 			// 检查记录是否已存在，决定是创建还是更新
 			var existingRecord bubbles1000.Bubbles1000
-			err = tx.Table("bubbles1000").Where("slug = ?", data.Slug).First(&existingRecord).Error
+			err = global.DB.Table("bubbles1000").Where("slug = ?", data.Slug).First(&existingRecord).Error
 
 			bubbles1000Model := bubbles1000.Bubbles1000{
 				// Id:  对于更新，GORM 通常会根据主键自动处理
@@ -215,17 +196,16 @@ var Bubbles1000Cmd = &cobra.Command{
 			if err == nil && existingRecord.Id > 0 {
 				// 记录存在，执行更新
 				// 注意：这里只更新非零值字段。如果需要强制更新空值，需要使用 Select
-				result = tx.Table("bubbles1000").Where("id = ?", existingRecord.Id).Updates(&bubbles1000Model)
+				result = global.DB.Table("bubbles1000").Where("id = ?", existingRecord.Id).Updates(&bubbles1000Model)
 				// 或者更明确地指定要更新的字段:
 				// result = tx.Table("bubbles1000").Where("id = ?", existingRecord.Id).Select("*").Updates(&bubbles1000Model)
 			} else {
 				// 记录不存在或查询出错（假设是不存在），执行创建
 				// 注意：如果因为唯一索引冲突导致创建失败，需要特殊处理
-				result = tx.Table("bubbles1000").Create(&bubbles1000Model)
+				result = global.DB.Table("bubbles1000").Create(&bubbles1000Model)
 			}
 
 			if result.Error != nil {
-				tx.Rollback()
 				global.Logger.Error(ctx, fmt.Sprintf("操作数据失败 (Slug: %s): %v", data.Slug, result.Error))
 				fmt.Printf("Error operating data (Slug: %s): %v\n", data.Slug, result.Error)
 				// 可以选择 continue 跳过错误，或 return 终止
@@ -240,13 +220,6 @@ var Bubbles1000Cmd = &cobra.Command{
 			//	 time.Sleep(time.Second * 2)
 			// }
 
-		}
-
-		// 提交事务
-		if err := tx.Commit().Error; err != nil {
-			global.Logger.Error(ctx, "提交事务失败:"+err.Error())
-			fmt.Printf("提交事务失败: %v\n", err)
-			return
 		}
 
 		global.Logger.Info(ctx, "所有数据处理并插入/更新成功")
