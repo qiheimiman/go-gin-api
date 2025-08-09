@@ -15,6 +15,7 @@ type detailRequest struct {
 
 type detailResponse struct {
 	Id int32 `json:"id"`
+	OrderNo string `json:"order_no"`
 }
 
 // Detail 查看详情
@@ -50,7 +51,7 @@ func (h *handler) Detail() core.HandlerFunc {
 		// 	return
 		// }
 
-		id := int32(1)
+		id := int32(2)
 
 		searchOneData := new(order.SearchOneData)
 		searchOneData.Id = id
@@ -77,6 +78,7 @@ func (h *handler) Detail() core.HandlerFunc {
 		}
 
 		res.Id = info.Id
+		res.OrderNo = info.OrderNo
 		fmt.Println(res)
 		c.Payload(res)
 	}
