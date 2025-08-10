@@ -86,7 +86,7 @@ var BinanceNewsCmd = &cobra.Command{
 		// fmt.Println("页面内容已抓取..." + htmlContent)
 
 		// 使用正则表达式提取 <script> 标签中 id="__APP_DATA" 的内容
-		re := regexp.MustCompile(`<script id="__APP_DATA" type="application/json" nonce="[^"]*">(.+?)</script>`)
+		re := regexp.MustCompile(`<script\s+id="__APP_DATA"\s+type="application/json"\s+nonce="[^"]*"\s*>(.+?)</script>`)
 		matches := re.FindStringSubmatch(htmlContent)
 
 		if len(matches) < 2 {

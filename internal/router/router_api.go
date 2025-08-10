@@ -3,13 +3,12 @@ package router
 import (
 	"github.com/xinliangnote/go-gin-api/internal/api/admin"
 	"github.com/xinliangnote/go-gin-api/internal/api/authorized"
+	"github.com/xinliangnote/go-gin-api/internal/api/bubbles"
 	"github.com/xinliangnote/go-gin-api/internal/api/config"
 	"github.com/xinliangnote/go-gin-api/internal/api/cron"
 	"github.com/xinliangnote/go-gin-api/internal/api/helper"
 	"github.com/xinliangnote/go-gin-api/internal/api/menu"
 	"github.com/xinliangnote/go-gin-api/internal/api/news"
-
-	// "github.com/xinliangnote/go-gin-api/internal/api/news"
 	"github.com/xinliangnote/go-gin-api/internal/api/order"
 	"github.com/xinliangnote/go-gin-api/internal/api/tool"
 	"github.com/xinliangnote/go-gin-api/internal/pkg/core"
@@ -119,6 +118,9 @@ func setApiRouter(r *resource) {
 
 		newsHandler := news.New(r.logger, r.db, r.cache)
 		publicApi.GET("/news/list", newsHandler.List())
+
+		bubblesHandler := bubbles.New(r.logger, r.db, r.cache)
+		publicApi.GET("/bubbles/list", bubblesHandler.List())
 
 	}
 }

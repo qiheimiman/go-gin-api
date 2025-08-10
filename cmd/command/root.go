@@ -20,5 +20,6 @@ func init() {
 	rootCmd.AddCommand(zhonghuan.ZhonghuanCmd)
 	rootCmd.AddCommand(bubbles.Bubbles1000Cmd)
 	rootCmd.AddCommand(binance.BinanceNewsCmd)
+	rootCmd.AddCommand(binance.BinanceFearGreedCmd)
 
 }
