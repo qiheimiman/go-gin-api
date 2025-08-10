@@ -30,7 +30,6 @@ func setApiRouter(r *resource) {
 	{
 		helpers.GET("/md5/:str", helperHandler.Md5())
 		helpers.POST("/sign", helperHandler.Sign())
-		helpers.GET("/now_time", helperHandler.NowTime())
 	}
 
 	// admin
@@ -121,6 +120,8 @@ func setApiRouter(r *resource) {
 
 		bubblesHandler := bubbles.New(r.logger, r.db, r.cache)
 		publicApi.GET("/bubbles/list", bubblesHandler.List())
+
+		publicApi.GET("/now_time", helperHandler.NowTime())
 
 	}
 }
