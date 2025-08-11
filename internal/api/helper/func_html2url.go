@@ -13,7 +13,7 @@ import (
 )
 
 type html2urlRequest struct {
-	HtmlCode string `form:"html_code" binding:"required"` // 需要转换的HTML代码
+	HtmlCode string `json:"html_code" binding:"required"` // 需要转换的HTML代码
 }
 
 type html2urlResponse struct {
@@ -34,7 +34,7 @@ func (h *handler) Html2url() core.HandlerFunc {
 		req := new(html2urlRequest)
 		res := new(html2urlResponse)
 
-		if err := ctx.ShouldBindForm(req); err != nil {
+		if err := ctx.ShouldBindJSON(req); err != nil {
 			fmt.Println(err)
 			ctx.AbortWithError(core.Error(
 				http.StatusBadRequest,
