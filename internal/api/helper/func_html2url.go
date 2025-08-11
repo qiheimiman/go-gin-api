@@ -24,7 +24,7 @@ type html2urlResponse struct {
 // @Summary 将html代码转为可访问的url链接
 // @Description 将html代码转为可访问的url链接
 // @Tags Helper
-// @Accept application/x-www-form-urlencoded
+// @Accept application/json
 // @Produce json
 // @Success 200 {object} nowTimeResponse
 // @Failure 400 {object} code.Failure
@@ -34,7 +34,7 @@ func (h *handler) Html2url() core.HandlerFunc {
 		req := new(html2urlRequest)
 		res := new(html2urlResponse)
 
-		if err := ctx.ShouldBindForm(req); err != nil {
+		if err := ctx.ShouldBindJSON(req); err != nil {
 			fmt.Println(err)
 			ctx.AbortWithError(core.Error(
 				http.StatusBadRequest,
