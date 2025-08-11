@@ -13,7 +13,7 @@ import (
 )
 
 type html2urlRequest struct {
-	HtmlCode string `form:"html_code" binding:"required"` // 需要转换的HTML代码
+	HtmlCode string `json:"html_code" binding:"required"` // 需要转换的HTML代码
 }
 
 type html2urlResponse struct {
