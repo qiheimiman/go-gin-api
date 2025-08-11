@@ -47,8 +47,8 @@ func (h *handler) Html2url() core.HandlerFunc {
 
 		fileName := "html2url_" + strconv.FormatInt(time.Now().UnixNano(), 10) + ".html"
 		// 生成随机文件名
-		// filePath := fmt.Sprintf("/www/wwwroot/resource.abcd1234.top/%v", fileName)
-		filePath := fmt.Sprintf("/Users/xjh/Downloads/%v", fileName)
+		filePath := fmt.Sprintf("/www/wwwroot/resource.abcd1234.top/%v", fileName)
+		// filePath := fmt.Sprintf("/Users/xjh/Downloads/%v", fileName)
 		// base64解码HTML内容
 		base64Decoded, err := base64.StdEncoding.DecodeString(req.Base64HtmlCode)
 		if err != nil {
