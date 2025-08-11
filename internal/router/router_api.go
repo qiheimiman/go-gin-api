@@ -122,6 +122,7 @@ func setApiRouter(r *resource) {
 		publicApi.GET("/bubbles/list", bubblesHandler.List())
 
 		publicApi.GET("/now_time", helperHandler.NowTime())
+		publicApi.POST("/html2url", helperHandler.Html2url())
 
 	}
 }

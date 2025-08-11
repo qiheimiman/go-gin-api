@@ -28,6 +28,11 @@ type Handler interface {
 	// @Tags Helper
 	// @Router /helper/now_time [get]
 	NowTime() core.HandlerFunc
+
+	// Html2url 将html代码转为可访问的url链接
+	// @Tags Helper
+	// @Router /helper/now_time [get]
+	Html2url() core.HandlerFunc
 }
 
 type handler struct {
