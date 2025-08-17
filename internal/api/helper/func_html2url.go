@@ -74,7 +74,7 @@ func (h *handler) Html2url() core.HandlerFunc {
 			return
 		}
 
-		res.Url = "http://resource.abcd1234.top/" + fileName
+		res.Url = "https://resource.abcd1234.top/" + fileName
 		ctx.Payload(res)
 	}
 }
