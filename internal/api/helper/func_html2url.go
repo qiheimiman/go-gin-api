@@ -45,7 +45,7 @@ func (h *handler) Html2url() core.HandlerFunc {
 			return
 		}
 
-		fileName := "html2url_" + strconv.FormatInt(time.Now().UnixNano(), 10) + ".html"
+		fileName := "html2url" + strconv.FormatInt(time.Now().UnixNano(), 10) + ".html"
 		// 生成随机文件名
 		filePath := fmt.Sprintf("/www/wwwroot/resource.abcd1234.top/%v", fileName)
 		// filePath := fmt.Sprintf("/Users/xjh/Downloads/%v", fileName)
